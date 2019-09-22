@@ -4,7 +4,7 @@ const bodyParser= require('body-parser');
 const cors = require('cors');
 const mongoose =require('mongoose');
 const guestRoutes = express.Router();
-const PORT = 4000;
+const PORT = process.env.PORT || 4000;
 
 let Guest= require("./guest_model");
 app.use(cors());
