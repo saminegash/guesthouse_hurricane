@@ -5,12 +5,13 @@ const cors = require('cors');
 const mongoose =require('mongoose');
 const guestRoutes = express.Router();
 const PORT = process.env.PORT || 4000;
+const path = require("path");
 
 let Guest= require("./guest_model");
 app.use(cors());
 app.use(bodyParser.json());
 
-mongoose.connect('mongodb://127.0.0.1:27017/guests',{ useNewUrlParser:true});
+mongoose.connect(process.env.MONGODB_URI || 'mongodb://127.0.0.1:27017/guests',{ useNewUrlParser:true});
 const connection= mongoose.connection;
 
 connection.once('open', function(){
@@ -72,6 +73,13 @@ guestRoutes.route('/update/:id').post(function(req, res){
 });
 app.use('/guests',guestRoutes);
 
+if(process.env.NODE_ENV==='production'){
+    app.use(express.static('client/build'));
+
+    app.get('*',(req,res) => {
+        res.sendFile(path.join(__dirname,'client','build','index.html'));
+    });
+}
 app.listen(PORT, function(){
     console.log("Server is running on Port: " + PORT);
 })
